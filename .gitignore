@@ -105,7 +105,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+*.env
 .venv
 env/
 venv/
@@ -153,3 +153,6 @@ tmp/
 
 # File .sqlite
 *.sqlite
+
+# File PostgreSQL
+postgresql
