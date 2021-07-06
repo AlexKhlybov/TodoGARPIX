@@ -24,7 +24,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     # SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todo.db")
-    SQLALCHEMY_DATABASE_URI = ("postgresql://post:post@localhost:5432/db")
+    SQLALCHEMY_DATABASE_URI = ("postgresql+pg8000://post:post@localhost:5432/db")
 
 
 class TestingConfig(Config):

@@ -1,6 +1,7 @@
 alembic==1.6.5
 aniso8601==9.0.1
 appdirs==1.4.4
+asn1crypto==1.4.0
 attrs==21.2.0
 black==21.6b0
 certifi==2021.5.30
@@ -21,6 +22,7 @@ MarkupSafe==2.0.1
 mypy-extensions==0.4.3
 pathspec==0.8.1
 peewee==3.14.4
+pg8000==1.20.0
 pyrsistent==0.17.3
 python-dateutil==2.8.1
 python-dotenv==0.18.0
@@ -28,6 +30,7 @@ python-editor==1.0.4
 pytz==2021.1
 regex==2021.4.4
 requests==2.25.1
+scramp==1.4.0
 six==1.16.0
 SQLAlchemy==1.4.20
 toml==0.10.2
