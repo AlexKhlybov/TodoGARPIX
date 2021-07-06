@@ -1,12 +1,13 @@
+from os.path import join, dirname
+
 from flask import Flask
+from dotenv import load_dotenv
 from flask_migrate import Migrate
+from sqlalchemy import create_engine
 
 from todo.config import config
 from todo.models import db
 from todo.resources import init_api
-
-from dotenv import load_dotenv
-from os.path import join, dirname
 
 
 migrate = Migrate()

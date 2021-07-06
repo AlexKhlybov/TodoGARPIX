@@ -6,6 +6,9 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 def create_sqlite_uri(db_name):
     return "sqlite:///" + os.path.join(BASEDIR, db_name)
 
+def create_psql_uri():
+    pass
+
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "secret key, just for testing"
@@ -20,7 +23,8 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todo.db")
+    # SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todo.db")
+    SQLALCHEMY_DATABASE_URI = ("postgresql://post:post@localhost:5432/db")
 
 
 class TestingConfig(Config):
