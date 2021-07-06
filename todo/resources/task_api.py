@@ -26,6 +26,7 @@ task_create = ns.model(
 task_list = ns.model(
     "Task_list",
     {
+        "id": fields.Integer(readonly=True, description="The task unique identifier"),
         "title": fields.String(required=True, description="The title task"),
         "create_at": fields.DateTime(required=True, description="Create date"),
     },
