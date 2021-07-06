@@ -1,7 +1,7 @@
 from flask import Flask
+
 from todo.config import config
 from todo.models import db
-# from todo.models.task_model import reset_db
 from todo.resources import init_api
 
 
@@ -14,6 +14,6 @@ def create_app(config_name):
     init_api(app)
 
     with app.app_context():
-        db.drop_all()
+        # db.drop_all()
         db.create_all()
     return app
