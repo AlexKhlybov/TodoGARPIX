@@ -1,13 +1,19 @@
 from flask import Flask
-from werkzeug.middleware.proxy_fix import ProxyFix
+from todo.config import config
+from todo.models import db
+# from todo.models.task_model import reset_db
+from todo.resources import init_api
 
-from .models.task_model import reset_db
-from .resources import init_api
 
-
-def create_app():
+def create_app(config_name):
     app = Flask(__name__)
-    app.wsgi_app = ProxyFix(app.wsgi_app)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    db.init_app(app)
     init_api(app)
-    reset_db()
+
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
     return app

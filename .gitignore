@@ -153,6 +153,7 @@ tmp/
 
 # File .sqlite
 *.sqlite
+*.db
 
 # File PostgreSQL
 postgresql
