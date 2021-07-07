@@ -26,7 +26,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = create_sqlite_uri("todo.db")
+    SQLALCHEMY_DATABASE_URI = create_sqlite_uri("test_todo.db")
     WTF_CSRF_ENABLED = False
     import logging
 

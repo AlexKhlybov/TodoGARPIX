@@ -1,6 +1,8 @@
 from todo import create_app
+import os
 
-app = create_app("development")
+
+app = create_app(os.environ.get('FLASK_ENV'))
 
 
 if __name__ == "__main__":

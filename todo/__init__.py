@@ -24,5 +24,9 @@ def create_app(config_name):
     db.init_app(app)
     init_api(app)
 
-    migrate.init_app(app, db)
+    if not config_name == 'testing':
+        migrate.init_app(app, db)
+    else:
+        with app.app_context():
+            db.create_all()
     return app
