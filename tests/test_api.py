@@ -1,11 +1,21 @@
-import unittest
-
 import requests
+import unittest2 as unittest
+from test_base import BaseTestCase
 
-from todo.models.task_model import Task, reset_db
+from todo.models.task_model import Task, db
 
 
-class ApiTest(unittest.TestCase):
+def created_tasks():
+    DAO = Task()
+    # Populating a dictionary using a dictionary generator
+    i = 0
+    while i < 10:
+        dic = {x: y for x, y in zip(("title", "content"), ("Buy milk", "Buy the most delicious milk"))}
+        DAO.create_task(dic)
+        i += 1
+
+
+class ApiTest(BaseTestCase):
     API_URL = "http://127.0.0.1:5000/api"
     TASKS_URL = f"{API_URL}/task/"
     TEST_DAO = Task()
@@ -17,15 +27,15 @@ class ApiTest(unittest.TestCase):
         "content": "Successfully completed my internship and work at GARPIX",
     }
 
-    def __init__(self, methodName: str) -> None:
-        super().__init__(methodName=methodName)
-        reset_db()
+    def setUp(self):
+        super(ApiTest, self).setUp()
 
     def _get_each_task_url(self, id):
         return f"{self.TASKS_URL}{id}"
 
     # GET request to /api/task/ returns the details of all tasks
     def test_1_get_all_tasks(self):
+        created_tasks()
         r = requests.get(self.TASKS_URL)
         self.assertEqual(r.status_code, 200)
         self.assertEqual(len(r.json()), 10)
@@ -60,3 +70,8 @@ class ApiTest(unittest.TestCase):
     def test_7_get_new_task_after_delete(self):
         r = requests.delete(self._get_each_task_url(self.ID))
         self.assertEqual(r.status_code, 404)
+        db.drop_all()
+
+
+if __name__ == "__main__":
+    unittest.main()

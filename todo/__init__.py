@@ -1,20 +1,18 @@
-from os.path import join, dirname
+from os.path import dirname, join
 
-from flask import Flask
 from dotenv import load_dotenv
+from flask import Flask
 from flask_migrate import Migrate
-from sqlalchemy import create_engine
 
 from todo.config import config
 from todo.models import db
 from todo.resources import init_api
 
-
 migrate = Migrate()
 
 
 def create_app(config_name):
-    dotenv_path = join(dirname(__file__), '.env')
+    dotenv_path = join(dirname(__file__), ".env")
     load_dotenv(dotenv_path)
 
     app = Flask(__name__)
@@ -24,7 +22,7 @@ def create_app(config_name):
     db.init_app(app)
     init_api(app)
 
-    if not config_name == 'testing':
+    if not config_name == "testing":
         migrate.init_app(app, db)
     else:
         with app.app_context():
