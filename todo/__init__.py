@@ -13,7 +13,7 @@ migrate = Migrate()
 
 def create_app(config_name):
     dotenv_path = join(dirname(__file__), ".env")
-    load_dotenv(dotenv_path)
+    var_env = load_dotenv(dotenv_path)
 
     app = Flask(__name__)
     app.config.from_object(config[config_name])
