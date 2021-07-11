@@ -1,13 +1,30 @@
+from os.path import dirname, join
+
+from dotenv import load_dotenv
 from flask import Flask
-from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_migrate import Migrate
 
-from .models.task_model import reset_db
-from .resources import init_api
+from todo.config import config
+from todo.models import db
+from todo.resources import init_api
+
+migrate = Migrate()
 
 
-def create_app():
+def create_app(config_name):
+    dotenv_path = join(dirname(__file__), ".env")
+    var_env = load_dotenv(dotenv_path)
+
     app = Flask(__name__)
-    app.wsgi_app = ProxyFix(app.wsgi_app)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    db.init_app(app)
     init_api(app)
-    reset_db()
+
+    if not config_name == "testing":
+        migrate.init_app(app, db)
+    else:
+        with app.app_context():
+            db.create_all()
     return app

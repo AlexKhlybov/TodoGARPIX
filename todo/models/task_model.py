@@ -1,91 +1,51 @@
 from datetime import datetime
 
 from flask import abort
-from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
 
-db = SqliteDatabase("todo.sqlite")
-
-
-class BaseModel(Model):
-    class Meta:
-        database = db
+from todo import db
 
 
-class Task(BaseModel):
-    title = CharField(max_length=150)
-    content = TextField()
-    create_at = DateTimeField(default=datetime.now)
+class Task(db.Model):
+    __tablename__ = "tasks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150))
+    content = db.Column(db.String())
+    create_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"{self.id}, {self.title}, {self.content}, {self.create_at}"
+        return f"<Task {self.title}>"
 
     def get_all_task(self):
-        tasks = Task.select()
-        tasks_json = []
-        for task in tasks:
-            tasks_json.append(
-                {"id": task.id, "title": task.title, "content": task.content, "create_at": task.create_at}
-            )
-        return tasks_json
-
-    def get_task(self, id):
-        try:
-            task = Task.select().where(Task.id == id).get()
-            return task
-        except:
-            abort(404, f"Todo {id} doesn't exist")
+        tasks = Task.query.all()
+        results = [
+            {"id": task.id, "title": task.title, "content": task.content, "create_at": task.create_at} for task in tasks
+        ]
+        return results
 
     def create_task(self, data):
-        note = Task(title=data["title"], content=data["content"], done=False)
-        note.save()
-        return note
+        task = Task(title=data["title"], content=data["content"])
+        db.session.add(task)
+        db.session.commit()
+        return task
+
+    def get_task(self, id):
+        task = Task.query.get_or_404(id)
+        return task
 
     def update_task(self, id, data):
-        try:
-            task = Task.select().where(Task.id == id).get()
-            if not "title" in data:
-                abort(400)
-            if not "content" in data:
-                abort(400)
-            task.title = data["title"]
-            task.content = data["content"]
-            task.save()
-            return task
-        except:
-            abort(404, f"Todo {id} doesn't exist")
+        task = Task.query.get_or_404(id)
+        if not "title" in data:
+            abort(400)
+        if not "content" in data:
+            abort(400)
+        task.title = data["title"]
+        task.content = data["content"]
+        db.session.add(task)
+        db.session.commit()
+        return task
 
     def delete_task(self, id):
-        try:
-            Task.get(Task.id == id).delete_instance()
-        except:
-            abort(404, f"Todo {id} doesn't exist.")
-
-
-MODELS = [
-    Task,
-]
-
-
-def reset_db():
-    with db:
-        db.drop_tables(MODELS)
-        db.create_tables(MODELS)
-    DAO = Task()
-
-    # Populating a dictionary using a dictionary generator
-    i = 0
-    while i < 10:
-        dic = {x: y for x, y in zip(("title", "content"), ("Buy milk", "Buy the most delicious milk"))}
-        DAO.create_task(dic)
-        i += 1
-
-    # DAO.create_task({"title": "Buy milk", "content": "Buy the most delicious milk"})
-    # DAO.create_task({"title": "Buy bread", "content": "Buy the most delicious bread"})
-    # DAO.create_task({"title": "Buy butter", "content": "Buy the most delicious butter"})
-    # DAO.create_task({"title": "Buy milk", "content": "Buy the most delicious milk"})
-    # DAO.create_task({"title": "Buy bread", "content": "Buy the most delicious bread"})
-    # DAO.create_task({"title": "Buy butter", "content": "Buy the most delicious butter"})
-    # DAO.create_task({"title": "Buy milk", "content": "Buy the most delicious milk"})
-    # DAO.create_task({"title": "Buy bread", "content": "Buy the most delicious bread"})
-    # DAO.create_task({"title": "Buy butter", "content": "Buy the most delicious butter"})
-    # DAO.create_task({"title": "Buy butter", "content": "Buy the most delicious butter"})
+        task = Task.query.get_or_404(id)
+        db.session.delete(task)
+        db.session.commit()
